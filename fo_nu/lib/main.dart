@@ -2,7 +2,45 @@ import 'package:flutter_overlay_window/flutter_overlay_window.dart'; // Package 
 import 'package:flutter/material.dart'; // For Simple UI
 import 'package:fo_nu/floating_button.dart'; 
 import 'package:flutter/services.dart'; // For Clipboard
+import 'package:share_plus/share_plus.dart'; // Package for shared files
+import 'package:path_provider/path_provider.dart'; // Package for file paths
+import 'dart:io'; // Library for input/output
 
+
+// Function to handle shared files (particularly audio files from WhatsApp) //////////////
+Future<void> handleSharedFiles(List<XFile> files) async {
+  if (files.isNotEmpty) {
+    // Get the first shared file
+    final XFile file = files.first;
+    
+    // Get file path
+    final String filePath = file.path;
+    
+    // Check if it's an audio file (basic check)
+    if (filePath.endsWith('.mp3') || filePath.endsWith('.m4a') || 
+        filePath.endsWith('.aac') || filePath.endsWith('.ogg')) {
+      await transcribeAudio(filePath);
+    }
+  }
+}
+
+// Function to transcribe audio to text
+Future<void> transcribeAudio(String filePath) async {
+  // This is a placeholder for actual transcription logic
+  // You'll implement this using tflite_flutter or an API
+  print("Transcribing audio file: $filePath");
+  
+  // Placeholder for transcription result
+  String transcribedText = "This is a placeholder for transcribed text from: $filePath";
+  
+  // Translate the transcribed text to Ewe
+  String eweText = translateToEwe(transcribedText);
+  
+  // Display the translated text
+  showEweOutput(eweText);
+} 
+
+///////////////////////////////////////////////////////////////
 
 // Clipboard monitoring //////////////
 // Calling this function when the floating button is tapped (FloatingButton)
@@ -45,7 +83,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
+// async function meaning it is running independently of main program flow or in background
 void main() async {
   runApp(MyApp());
   if (await FlutterOverlayWindow.isPermissionGranted()) {
@@ -67,7 +105,7 @@ void main() async {
 // Here is entry-point of the App
 @pragma("vm:entry-point")
 void overlayMain() {
-  runApp(MaterialApp(
+  runApp(MaterialApp( // Here we got the root of thewidget tree
     home: Scaffold(
       body: FloatingButton(),
     ),
