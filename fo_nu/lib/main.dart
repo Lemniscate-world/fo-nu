@@ -91,9 +91,14 @@ class MyApp extends StatelessWidget {
 // async function meaning it is running independently of main program flow or in background
 void main() async {
 
+  // Initializes the binding between the Flutter framework and the device
   WidgetsFlutterBinding.ensureInitialized();
+  // Ensures Fluter engine is properly setup
 
   // Setting up and sharing intent handling
+  // Share intent handling is a mechanism for apps to receive content shared from other apps 
+  // Require registration in the app manifest which i did
+  // Enables features like "Share to" functionality from other apps
   final args = WidgetsBinding.instance.platformDispatcher.defaultRouteName;
   if (args.startsWith('/share')) {
     // This is a share intent
