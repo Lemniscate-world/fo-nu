@@ -8,9 +8,12 @@ import 'dart:io'; // Library for input/output
 
 
 // Function to handle shared files (particularly audio files from WhatsApp) //////////////
+// XFile is a cross-platform file representation part of the share_plus package
+// It provides convenient methods to access file properties and content
 Future<void> handleSharedFiles(List<XFile> files) async {
   if (files.isNotEmpty) {
     // Get the first shared file
+    // final is a variable modifier that makes a variable immutable (can't be reassigned after initialization)
     final XFile file = files.first;
     
     // Get file path
@@ -19,6 +22,8 @@ Future<void> handleSharedFiles(List<XFile> files) async {
     // Check if it's an audio file (basic check)
     if (filePath.endsWith('.mp3') || filePath.endsWith('.m4a') || 
         filePath.endsWith('.aac') || filePath.endsWith('.ogg')) {
+      // Pauses execution of an async function until a Future completes, unwraps the Future and returns its value
+      // Transcribe the audio file is a <Future>
       await transcribeAudio(filePath);
     }
   }
@@ -27,7 +32,7 @@ Future<void> handleSharedFiles(List<XFile> files) async {
 // Function to transcribe audio to text
 Future<void> transcribeAudio(String filePath) async {
   // This is a placeholder for actual transcription logic
-  // You'll implement this using tflite_flutter or an API
+  //  tflite_flutter or an API
   print("Transcribing audio file: $filePath");
   
   // Placeholder for transcription result
@@ -85,7 +90,26 @@ class MyApp extends StatelessWidget {
 
 // async function meaning it is running independently of main program flow or in background
 void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Setting up and sharing intent handling
+  final args = WidgetsBinding.instance.platformDispatcher.defaultRouteName;
+  if (args.startsWith('/share')) {
+    // This is a share intent
+    Share.getInitialFiles().then((List<XFile> files) {
+      if (files.isNotEmpty) {
+        handleSharedFiles(files);
+      }
+    });
+  }
+
+
+
   runApp(MyApp());
+
+
+  // Setting up overlay window
   if (await FlutterOverlayWindow.isPermissionGranted()) {
     FlutterOverlayWindow.showOverlay(
       height: 100,
