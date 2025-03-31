@@ -6,10 +6,12 @@ import 'package:flutter/services.dart'; // For Clipboard
 
 // Clipboard monitoring //////////////
 // Calling this function when the floating button is tapped (FloatingButton)
+// Accessing the system clipboard, requesting text data specifically, and using .then() because clipboard access is asynchronous
 void monitorClipboard() {
   Clipboard.getData(Clipboard.kTextPlain).then((clip) {
     if (clip?.text != null) {
       String eweText = translateToEwe(clip!.text!);
+      // Display the translated text
       showEweOutput(eweText);
     }
   });
@@ -29,9 +31,7 @@ void showEweOutput(String text) {
 
 //////////////////////////////////////
 
-
-
-
+// Principal App Class //////////////
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 
 void main() async {
   runApp(MyApp());
@@ -58,6 +59,12 @@ void main() async {
   }
 }
 
+///////////////////////////////////////
+
+// pragma for overlay, pragma is a directive to the Dart compiler
+// It means the following function should be included in the final binary and never be optimized
+// even if it appears to be unused
+// Here is entry-point of the App
 @pragma("vm:entry-point")
 void overlayMain() {
   runApp(MaterialApp(
