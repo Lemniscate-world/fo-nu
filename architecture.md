@@ -18,3 +18,18 @@ tflite_flutter (TensorFlow Lite): Runs transcription/translation models (e.g., W
 
 
 
+Floating Button: A draggable FloatingActionButton or custom widget as the overlay.
+
+Pop-up Output: A small AlertDialog or custom overlay widget to show Ewe text.
+
+
+Overlay Permission: Request Android’s "Draw Over Other Apps" via flutter_overlay_window.
+
+Share Intent: Handle incoming audio files with share_plus.
+
+
+
+Temporary Files: Store voice notes in path_provider’s temp directory.
+
+Caching: Use a Dart Map for quick dictionary lookups.
+
