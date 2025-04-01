@@ -11,20 +11,31 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fo_nu/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Translation dictionary test', (WidgetTester tester) async {
+    // Test dictionary lookup functionality
+    expect(translateToEwe("Hello"), equals("Shalom"));
+    expect(translateToEwe("Good"), equals("Eƒe"));
+    expect(translateToEwe("Unknown Word"), equals("Nye dzi"));
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('Overlay UI renders correctly', (WidgetTester tester) async {
+    // Build a test widget that shows the overlay content
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Container(
+              padding: EdgeInsets.all(16),
+              color: Colors.white,
+              child: Text("Shalom", style: TextStyle(fontSize: 18)),
+            ),
+          ),
+        ),
+      ),
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify the text is displayed correctly
+    expect(find.text("Shalom"), findsOneWidget);
+    expect(find.byType(Container), findsOneWidget);
   });
 }

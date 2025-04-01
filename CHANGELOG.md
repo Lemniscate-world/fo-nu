@@ -2,6 +2,45 @@
 
 All notable changes to the Fo Nu project will be documented in this file.
 
+## [0.1.1] - 2023-08-10
+
+### Added
+- Implemented basic Ewe dictionary with common phrases
+- Enhanced translation function with dictionary lookup
+- Improved overlay UI for displaying translated text
+- Added tap-to-copy functionality for translated text
+- Implemented automatic overlay dismissal after copying
+
+### Technical Implementation Details
+- **Dictionary Implementation**: 
+  - Created `Map<String, String>` structure for English-to-Ewe translations
+  - Added 10 common phrases as initial dictionary entries
+  - Implemented fallback text ("Nye dzi") for unknown phrases
+
+- **Overlay Improvements**:
+  - Set fixed dimensions (200×300 pixels) for consistent user experience
+  - Implemented `GestureDetector` for tap interaction
+  - Added clipboard integration using `Clipboard.setData`
+  - Implemented automatic overlay dismissal with `FlutterOverlayWindow.closeOverlay()`
+
+- **UI Enhancements**:
+  - Improved text styling with 18pt font size
+  - Added padding (16px) around text for better readability
+  - Used clean white background for maximum contrast
+
+### Known Issues
+- Dictionary is limited to only 10 phrases
+- No support for partial matches or sentence parsing
+- Transcription still uses placeholder instead of actual TFLite implementation
+- No feedback mechanism for unknown words
+
+### Next Steps
+- Expand dictionary with more Ewe phrases
+- Implement TensorFlow Lite for actual audio transcription
+- Add support for sentence parsing and partial matches
+- Implement user feedback mechanism for unknown words
+- Add pronunciation guides or audio playback for Ewe phrases
+
 ## [0.1.0] - 2023-07-15
 
 ### Added
