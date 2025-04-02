@@ -2,6 +2,41 @@
 
 All notable changes to the Fo Nu project will be documented in this file.
 
+## [0.1.2] - 2023-09-15
+
+### Added
+- Improved error handling for file sharing intents
+- Updated method calls for receive_sharing_intent package compatibility
+- Enhanced clipboard monitoring with better error feedback
+
+### Technical Implementation Details
+- **Package Compatibility Updates**: 
+  - Updated method calls for `receive_sharing_intent` package
+  - Fixed method references from `getInitialMedia()` to `getInitialFiles()`
+  - Changed `getMediaStream()` to `getSharedFiles()` for proper stream handling
+
+- **Error Handling Improvements**:
+  - Added try-catch blocks around sharing intent operations
+  - Implemented proper error logging for debugging purposes
+  - Added user-friendly error messages for failed operations
+
+- **Code Structure Enhancements**:
+  - Refactored clipboard monitoring for better reliability
+  - Improved UI feedback during processing operations
+  - Optimized overlay window management
+
+### Known Issues
+- Dictionary is still limited to only 10 phrases
+- No support for partial matches or sentence parsing
+- Transcription still uses placeholder instead of actual TFLite implementation
+
+### Next Steps
+- Implement TensorFlow Lite for audio transcription
+- Expand Ewe dictionary with more phrases
+- Add support for sentence parsing and partial matches
+- Improve UI/UX for better user interaction
+- Add settings page for customization options
+
 ## [0.1.1] - 2023-08-10
 
 ### Added

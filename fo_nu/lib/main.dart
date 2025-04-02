@@ -190,7 +190,8 @@ Future<void> receiveSharedFile() async {
   try {
     // Fixed: Using getInitialFiles() instead of getInitialMedia() or getInitialFile()
     final List<SharedMediaFile>? sharedMediaFiles =
-        await ReceiveSharingIntent.getInitialMedia();
+        // .instance provides access to the singleton instance of the sharing intent handler initialized when WidgetsFlutterBinding.ensureInitialized() is called
+        await ReceiveSharingIntent.instance.getInitialMedia();
 
     if (sharedMediaFiles != null && sharedMediaFiles.isNotEmpty) {
       final List<XFile> files =
@@ -214,7 +215,7 @@ void main() async {
     // This is a share intent
     try {
       // Fixed: Using getSharedFiles() instead of getSharedMedia() or getMediaStream()
-      ReceiveSharingIntent.getMediaStream().listen(
+      ReceiveSharingIntent.instance.getMediaStream().listen(
         (List<SharedMediaFile> sharedMediaFiles) {
           if (sharedMediaFiles.isNotEmpty) {
             final List<XFile> files =
