@@ -1,8 +1,8 @@
 import 'package:flutter_overlay_window/flutter_overlay_window.dart'; // Package for Everything Overlay
 import 'package:flutter/material.dart'; // For Simple UI
-import 'package:fo_nu/floating_button.dart';
 import 'package:flutter/services.dart'; // For Clipboard
 import 'package:share_plus/share_plus.dart'; // Package for shared files
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 // Package for file paths
 // Library for input/output
 
@@ -126,48 +126,112 @@ Future<void> showEweOutput(String text) async {
 
 // Principal App Class //////////////
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Fo Nu',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: MyHomePage(),
+      home: Scaffold(
+        appBar: AppBar(title: Text("Ewe Transcriber")),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: () async {
+                  if (await FlutterOverlayWindow.isPermissionGranted()) {
+                    FlutterOverlayWindow.showOverlay(
+                      height: 100,
+                      width: 100,
+                      alignment: OverlayAlignment.center,
+                    );
+                  } else {
+                    FlutterOverlayWindow.requestPermission();
+                  }
+                },
+                child: Text("Start Overlay"),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => processInput(context),
+                child: Text("Process Clipboard"),
+              ),
+              SizedBox(height: 40),
+              Text(
+                "Fo Nu - Ewe Translator",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              Text(
+                "Copy text to clipboard or share audio files to translate to Ewe",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void processInput(BuildContext context) {
+    monitorClipboard(); // Check clipboard
+    // Show a snackbar to indicate processing
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Checking clipboard for text to translate...")),
     );
   }
 }
 
-// async function meaning it is running independently of main program flow or in background
+// Add this function to handle shared files from the main UI
+Future<void> receiveSharedFile() async {
+  try {
+    // Fixed: Using getInitialFiles() instead of getInitialMedia() or getInitialFile()
+    final List<SharedMediaFile>? sharedMediaFiles =
+        await ReceiveSharingIntent.getInitialMedia();
+
+    if (sharedMediaFiles != null && sharedMediaFiles.isNotEmpty) {
+      final List<XFile> files =
+          sharedMediaFiles.map((file) => XFile(file.path)).toList();
+      await handleSharedFiles(files);
+    }
+  } catch (e) {
+    print("Error receiving shared files: $e");
+  }
+}
+
+// Update main function to use the new MyApp implementation
 void main() async {
   // Initializes the binding between the Flutter framework and the device
   WidgetsFlutterBinding.ensureInitialized();
-  // Ensures Fluter engine is properly setup
+  // Ensures Flutter engine is properly setup
 
   // Setting up and sharing intent handling
-  // Share intent handling is a mechanism for apps to receive content shared from other apps
-  // Require registration in the app manifest which i did
-  // Enables features like "Share to" functionality from other apps
   final args = WidgetsBinding.instance.platformDispatcher.defaultRouteName;
   if (args.startsWith('/share')) {
     // This is a share intent
-    Share.getInitialFiles().then((List<XFile> files) {
-      if (files.isNotEmpty) {
-        handleSharedFiles(files);
-      }
-    });
+    try {
+      // Fixed: Using getSharedFiles() instead of getSharedMedia() or getMediaStream()
+      ReceiveSharingIntent.getMediaStream().listen(
+        (List<SharedMediaFile> sharedMediaFiles) {
+          if (sharedMediaFiles.isNotEmpty) {
+            final List<XFile> files =
+                sharedMediaFiles.map((file) => XFile(file.path)).toList();
+            handleSharedFiles(files);
+          }
+        },
+        onError: (e) {
+          print("Error handling share intent stream: $e");
+        },
+      );
+    } catch (e) {
+      print("Error handling share intent: $e");
+    }
   }
 
-  runApp(MyApp());
-
-  // Setting up overlay window
-  if (await FlutterOverlayWindow.isPermissionGranted()) {
-    FlutterOverlayWindow.showOverlay(
-      height: 100,
-      width: 100,
-      alignment: OverlayAlignment.center,
-    );
-  } else {
-    FlutterOverlayWindow.requestPermission();
-  }
+  runApp(const MyApp());
 }
 
 ///////////////////////////////////////
@@ -180,15 +244,19 @@ void main() async {
 void overlayMain() {
   runApp(
     MaterialApp(
-      // Here we got the root of thewidget tree
+      // Here we got the root of the widget tree
       home: Scaffold(body: FloatingButton()),
     ),
   );
 }
 
+// -----------------------------------------------------------------
+
 // The Floating Button and Its World Here ////////////
 
 class FloatingButton extends StatelessWidget {
+  const FloatingButton({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
